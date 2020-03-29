@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from mb.pokercalculator.engine.calculator import Calculator
 
@@ -16,16 +16,16 @@ class CalculatorTests(TestCase):
         self.assertEqual(calculator._card_deck, self.mock_card_deck)
         self.assertEqual(calculator._players, self.mock_players)
 
-    def test_calculate_from_outs(self):
-        mock_hand = Mock()
-        mock_hand.return_value.probability_from_outs.return_value = 0.1
+    @patch("mb.pokercalculator.engine.calculator.HandFactory.get")
+    def test_calculate_from_outs(self, mock_hand_factory):
+        mock_hand_factory.return_value.probability_from_outs.return_value = 0.1
 
+        mock_hand = "mock_hand"
         mock_outs = [Mock()]
-        mock_round = "mock_round"
 
-        result = Calculator.calculate_from_outs(self.mock_self, mock_hand, mock_outs, mock_round)
-        mock_hand.assert_called_with(self.mock_card_deck)
-        mock_hand.return_value.probability_from_outs.assert_called_with(mock_outs, mock_round)
+        result = Calculator.calculate_from_outs(self.mock_self, mock_hand, mock_outs)
+        mock_hand_factory.assert_called_with("mock_hand", self.mock_card_deck)
+        mock_hand_factory.return_value.probability_from_outs.assert_called_with(mock_outs)
         self.assertEqual(result, 0.1)
 
 
