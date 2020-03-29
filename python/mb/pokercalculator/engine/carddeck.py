@@ -7,7 +7,7 @@ class CardDeck:
         suits = ["club", "diamond", "heart", "spade"]
         values = [str(v) for v in range(2, 11)] + ["J", "Q", "K", "A"]
 
-        self._cards = [[Card(s, v) for v in values] for s in suits]
+        self._cards = [Card(s, v) for v in values for s in [s for s in suits]]
 
     def __iter__(self):
         """Iterate through the card deck.
